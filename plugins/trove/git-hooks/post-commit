@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+# Auto-close todos referenced by `closes|fixes|done #N` in the commit message.
+# Records the commit hash in closed_by_commit: so post-rewrite can reopen if
+# the commit later becomes unreachable.
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)" || exit 0
+TODO="__TODO_DISPATCHER__"   # substituted by install-hooks at copy time
+[[ -x "$TODO" || -f "$TODO" ]] || exit 0
+
+TODOS_DIR="$REPO_ROOT/.claude/todos"
+[[ -d "$TODOS_DIR" ]] || exit 0
+
+COMMIT_HASH="$(git rev-parse HEAD)"
+MSG="$(git log -1 --pretty=%B HEAD)"
+ids="$(printf '%s' "$MSG" | grep -oiE '(closes|fixes|done)[[:space:]]+#[0-9]+' | grep -oE '[0-9]+' | sort -u)"
+[[ -z "$ids" ]] && exit 0
+
+for id in $ids; do
+    bash "$TODO" done "$id" --commit "$COMMIT_HASH" --dir "$TODOS_DIR" || true
+done

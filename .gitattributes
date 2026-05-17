@@ -1,0 +1,18 @@
+# Force LF for all shell scripts and shell-ish files. Windows clones
+# convert to LF on checkout via core.autocrlf=true, but git hooks and
+# .sh files break with CRLF on Unix shebangs (`bad interpreter`).
+*.sh           text eol=lf
+*.json         text eol=lf
+*.md           text eol=lf
+*.yml          text eol=lf
+.gitignore     text eol=lf
+.gitkeep       text eol=lf
+.gitattributes text eol=lf
+
+# Git hook files (no extension)
+plugins/todo/git-hooks/post-commit   text eol=lf
+plugins/todo/git-hooks/post-rewrite  text eol=lf
+
+# PowerShell files use CRLF (Windows convention; PowerShell handles either,
+# but native tooling expects CRLF).
+*.ps1  text eol=crlf

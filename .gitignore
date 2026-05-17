@@ -1,0 +1,28 @@
+# Claude Code — per-user / per-machine artifacts that shouldn't be shared.
+# Track the folders themselves (via .gitkeep) so a fresh clone has them ready
+# for the localize tool, but ignore the contents (notes + backlog are private).
+.claude/memory/*
+!.claude/memory/.gitkeep
+.claude/todos/*
+!.claude/todos/.gitkeep
+.claude/settings.local.json
+CLAUDE.local.md
+
+# Editor / IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Local-only test artifacts
+*.log
+*.tmp
+.tmp/
+
+# Local secrets
+.env
+.env.local

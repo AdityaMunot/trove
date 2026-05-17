@@ -1,0 +1,18 @@
+{
+  "name": "trove",
+  "owner": {
+    "name": "Aditya Munot",
+    "url": "https://github.com/AdityaMunot"
+  },
+  "metadata": {
+    "description": "Persistent backlog + per-project state localization for Claude Code.",
+    "version": "1.0.0"
+  },
+  "plugins": [
+    {
+      "name": "trove",
+      "source": "./plugins/trove",
+      "description": "Persistent backlog + per-project state localization. Two skills: `todo` (git-friendly task tracking with auto-close on commit and multi-machine sync) and `localize` (Windows junction / POSIX symlink memory + todos into a project repo)."
+    }
+  ]
+}

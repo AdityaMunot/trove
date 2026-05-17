@@ -1,0 +1,13 @@
+{
+  "name": "trove",
+  "version": "1.0.0",
+  "description": "Persistent backlog + per-project state localization. Two skills: `todo` (git-friendly task tracking with auto-close on commit and multi-machine sync) and `localize` (Windows junction / POSIX symlink for ~/.claude/projects/<slug>/{memory,todos}/ into a project repo).",
+  "author": {
+    "name": "Aditya Munot",
+    "url": "https://github.com/AdityaMunot"
+  },
+  "homepage": "https://github.com/AdityaMunot/trove",
+  "repository": "https://github.com/AdityaMunot/trove",
+  "license": "MIT",
+  "keywords": ["todo", "backlog", "tasks", "session-persistence", "junction", "symlink", "memory"]
+}
