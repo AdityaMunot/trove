@@ -11,3 +11,16 @@ jobs:
           sudo apt-get update -qq && sudo apt-get install -y -qq shellcheck
           mapfile -t files < <(find . -type f -name '*.sh' -not -path './.git/*')
           shellcheck --severity=warning "${files[@]}"
+
+  test:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Smoke test (full todo lifecycle)
+        run: bash tests/smoke.sh
+      - name: Sync smoke (auto-renumber on add/add conflict)
+        run: bash tests/sync-smoke.sh
