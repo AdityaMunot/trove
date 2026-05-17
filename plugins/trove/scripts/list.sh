@@ -55,7 +55,8 @@ if (( ${#files[@]} == 0 )); then
     exit 0
 fi
 
-mapfile -t sorted < <(printf '%s\n' "${files[@]}" | awk -F/ '{print $NF}' | sort -t. -k1n)
+sorted=()
+while IFS= read -r __line; do sorted+=("$__line"); done < <(printf '%s\n' "${files[@]}" | awk -F/ '{print $NF}' | sort -t. -k1n)
 
 shown=0
 matched=0
@@ -73,7 +74,8 @@ for f in "${sorted[@]}"; do
     [[ -n "$PRIORITY" && "$p" != "$PRIORITY" ]] && continue
 
     tags_raw="$(todo_get_field "$path" "tags")"
-    mapfile -t tags < <(todo_parse_list "$tags_raw")
+    tags=()
+    while IFS= read -r __line; do tags+=("$__line"); done < <(todo_parse_list "$tags_raw")
 
     if [[ -n "$TAG" ]]; then
         found=0

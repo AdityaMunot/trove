@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-# Shared helpers. Bash 4+ assumed (mapfile, associative arrays).
+# Shared helpers. Targets bash 3.2+ for compatibility with macOS default
+# bash. Avoids mapfile, declare -A, and ${array[-1]} (all bash 4+).
 
 # ---- Path / slug helpers ----
 
@@ -127,8 +128,8 @@ todo_open_blockers() {
     local path="$1" dir="$2"
     local blocked_raw
     blocked_raw="$(todo_get_field "$path" "blocked_by")"
-    local ids
-    mapfile -t ids < <(todo_parse_list "$blocked_raw")
+    local ids=()
+    while IFS= read -r __line; do ids+=("$__line"); done < <(todo_parse_list "$blocked_raw")
     local out=()
     for bid in "${ids[@]:-}"; do
         [[ "$bid" =~ ^[0-9]+$ ]] || continue
@@ -160,8 +161,8 @@ todo_blocks_of() {
         [[ "$stem" =~ ^[0-9]+$ ]] || continue
         local raw
         raw="$(todo_get_field "$f" "blocked_by")"
-        local ids
-        mapfile -t ids < <(todo_parse_list "$raw")
+        local ids=()
+        while IFS= read -r __line; do ids+=("$__line"); done < <(todo_parse_list "$raw")
         for did in "${ids[@]:-}"; do
             [[ "$did" == "$id" ]] && echo "$stem" && break
         done
@@ -173,20 +174,24 @@ todo_blocks_of() {
 todo_cycle_check() {
     local a="$1" b="$2" dir="$3"
     [[ "$a" == "$b" ]] && return 0
-    declare -A visited
+    # Bash 3.2-portable: track visited IDs in a space-delimited string with
+    # leading + trailing spaces for unambiguous substring matching, instead
+    # of `declare -A` (bash 4+ only).
+    local visited=" "
     local stack=("$b")
     while (( ${#stack[@]} > 0 )); do
-        local cur="${stack[-1]}"
-        unset 'stack[-1]'
-        [[ -n "${visited[$cur]:-}" ]] && continue
-        visited[$cur]=1
+        local __last=$((${#stack[@]} - 1))
+        local cur="${stack[$__last]}"
+        unset "stack[$__last]"
+        [[ "$visited" == *" $cur "* ]] && continue
+        visited+="$cur "
         [[ "$cur" == "$a" ]] && return 0
         local cpath="$dir/$cur.md"
         [[ -f "$cpath" ]] || continue
         local raw
         raw="$(todo_get_field "$cpath" "blocked_by")"
-        local deps
-        mapfile -t deps < <(todo_parse_list "$raw")
+        local deps=()
+        while IFS= read -r __line; do deps+=("$__line"); done < <(todo_parse_list "$raw")
         for d in "${deps[@]:-}"; do
             [[ "$d" =~ ^[0-9]+$ ]] && stack+=("$d")
         done
@@ -214,8 +219,8 @@ todo_blocked_by_add() {
     local path="$1" new_id="$2"
     local raw
     raw="$(todo_get_field "$path" "blocked_by")"
-    local ids
-    mapfile -t ids < <(todo_parse_list "$raw")
+    local ids=()
+    while IFS= read -r __line; do ids+=("$__line"); done < <(todo_parse_list "$raw")
     for x in "${ids[@]:-}"; do
         [[ "$x" == "$new_id" ]] && return 1   # already present
     done
@@ -234,8 +239,8 @@ todo_blocked_by_remove() {
     local path="$1" rm_id="$2"
     local raw
     raw="$(todo_get_field "$path" "blocked_by")"
-    local ids
-    mapfile -t ids < <(todo_parse_list "$raw")
+    local ids=()
+    while IFS= read -r __line; do ids+=("$__line"); done < <(todo_parse_list "$raw")
     local out=() found=0
     for x in "${ids[@]:-}"; do
         if [[ "$x" == "$rm_id" ]]; then

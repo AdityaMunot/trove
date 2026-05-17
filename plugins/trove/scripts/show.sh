@@ -34,7 +34,8 @@ cat "$path"
 
 # Append relationship lines: blocked_by status + what this task blocks.
 blocked_raw="$(todo_get_field "$path" "blocked_by")"
-mapfile -t deps < <(todo_parse_list "$blocked_raw")
+deps=()
+while IFS= read -r __line; do deps+=("$__line"); done < <(todo_parse_list "$blocked_raw")
 if (( ${#deps[@]} > 0 )) && [[ -n "${deps[0]:-}" ]]; then
     parts=""
     for d in "${deps[@]}"; do

@@ -93,8 +93,9 @@ renumber_conflict() {
 finish_rebase() {
     while [[ -d "$REPO_ROOT/.git/rebase-merge" || -d "$REPO_ROOT/.git/rebase-apply" ]]; do
         # Find add/add conflicts (`AA` in porcelain) on .claude/todos/<digits>.md.
-        local conflicts
-        mapfile -t conflicts < <(git -C "$REPO_ROOT" status --porcelain \
+        local conflicts=()
+        while IFS= read -r __line; do conflicts+=("$__line"); done < <(
+            git -C "$REPO_ROOT" status --porcelain \
             | awk -v rel="$TODOS_REL" '/^AA / {
                 sub(/^AA[[:space:]]+/, "")
                 if ($0 ~ "^"rel"/[0-9]+\\.md$") print

@@ -51,7 +51,8 @@ for f in "${files[@]:-}"; do
     stem="$(basename "$f" .md)"
     [[ "$stem" =~ ^[0-9]+$ ]] || continue
     raw="$(todo_get_field "$f" "blocked_by")"
-    mapfile -t deps < <(todo_parse_list "$raw")
+    deps=()
+    while IFS= read -r __line; do deps+=("$__line"); done < <(todo_parse_list "$raw")
     for d in "${deps[@]:-}"; do
         [[ -z "$d" || ! "$d" =~ ^[0-9]+$ ]] && continue
         if [[ ! -f "$DIR_RESOLVED/$d.md" ]]; then
@@ -67,7 +68,8 @@ for f in "${files[@]:-}"; do
     stem="$(basename "$f" .md)"
     [[ "$stem" =~ ^[0-9]+$ ]] || continue
     raw="$(todo_get_field "$f" "blocked_by")"
-    mapfile -t deps < <(todo_parse_list "$raw")
+    deps=()
+    while IFS= read -r __line; do deps+=("$__line"); done < <(todo_parse_list "$raw")
     for d in "${deps[@]:-}"; do
         [[ -z "$d" || ! "$d" =~ ^[0-9]+$ ]] && continue
         if todo_cycle_check "$stem" "$d" "$DIR_RESOLVED"; then

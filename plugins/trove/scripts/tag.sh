@@ -34,7 +34,8 @@ path="$DIR_RESOLVED/$ID.md"
 [[ ! -f "$path" ]] && { echo "no task with id $ID" >&2; exit 1; }
 
 raw="$(todo_get_field "$path" "tags")"
-mapfile -t tags < <(todo_parse_list "$raw")
+tags=()
+while IFS= read -r __line; do tags+=("$__line"); done < <(todo_parse_list "$raw")
 
 if [[ "$OP" == "add" ]]; then
     for t in "${tags[@]:-}"; do
