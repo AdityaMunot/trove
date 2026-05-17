@@ -61,7 +61,7 @@ assert "show has empty due" "$out" "due:"
 
 echo
 echo "=== done #1 (should unblock #3) ==="
-out="$(bash "$TODO" done 1 "${DIR[@]}")"
+out="$(bash "$TODO" "done" 1 "${DIR[@]}")"
 assert "done #1" "$out" "#1 done"
 assert "done reports unblocked #3" "$out" "now unblocked: #3"
 

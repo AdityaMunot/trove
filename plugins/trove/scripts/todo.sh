@@ -15,7 +15,10 @@ ACTION="$1"; shift
 
 case "$ACTION" in
     add|list|show|done|reopen|rm|edit|priority|tag|due|where|block|unblock|next|verify|sync)
-        exec "$SCRIPT_DIR/$ACTION.sh" "$@"
+        # Invoke via bash so the action scripts don't require the +x bit
+        # (git on Windows defaults core.filemode=false; checkouts elsewhere
+        # may not preserve the executable bit reliably).
+        exec bash "$SCRIPT_DIR/$ACTION.sh" "$@"
         ;;
     -h|--help)
         cat <<'EOF'
