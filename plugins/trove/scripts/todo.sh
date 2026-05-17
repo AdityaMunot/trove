@@ -4,6 +4,14 @@
 
 set -euo pipefail
 
+# Bash 4+ required (mapfile, associative arrays). macOS default is 3.2 —
+# `brew install bash` to get a modern bash on PATH, then re-run.
+if (( BASH_VERSINFO[0] < 4 )); then
+    echo "trove requires bash 4+ (you have $BASH_VERSION)." >&2
+    echo "macOS users: brew install bash" >&2
+    exit 1
+fi
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 if [[ $# -lt 1 ]]; then

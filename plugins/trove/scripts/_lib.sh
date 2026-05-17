@@ -46,6 +46,9 @@ todo_next_id() {
     shopt -s nullglob
     local files=("$dir"/*.md)
     shopt -u nullglob
+    # Empty-glob guard: under `set -u`, "${files[@]}" on an empty array is
+    # unbound on older bash (macOS default 3.2).
+    [[ ${#files[@]} -eq 0 ]] && { echo 1; return; }
     for f in "${files[@]}"; do
         local base
         base="$(basename "$f" .md)"
@@ -150,6 +153,7 @@ todo_blocks_of() {
     shopt -s nullglob
     local files=("$dir"/*.md)
     shopt -u nullglob
+    [[ ${#files[@]} -eq 0 ]] && return
     for f in "${files[@]}"; do
         local stem
         stem="$(basename "$f" .md)"

@@ -1,6 +1,6 @@
 {
   "name": "trove",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Persistent backlog + per-project state localization. Two skills: `todo` (git-friendly task tracking with auto-close on commit and multi-machine sync) and `localize` (Windows junction / POSIX symlink for ~/.claude/projects/<slug>/{memory,todos}/ into a project repo).",
   "author": {
     "name": "Aditya Munot",
