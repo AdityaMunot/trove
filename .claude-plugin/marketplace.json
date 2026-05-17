@@ -6,7 +6,7 @@
   },
   "metadata": {
     "description": "Persistent backlog + per-project state localization for Claude Code.",
-    "version": "1.0.3"
+    "version": "1.0.1"
   },
   "plugins": [
     {
